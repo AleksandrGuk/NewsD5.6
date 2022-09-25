@@ -1,30 +1,25 @@
 from django import forms
 from django.core.exceptions import ValidationError
+
 from .models import New
 
 
-class Post:
-    pass
-
-
-class PostForm(forms.ModelForm):
-    post_heading = forms.CharField(min_length=10)
+class NewForm(forms.ModelForm):
+    description = forms.CharField(min_length=20)
 
     class Meta:
-        model = Post
-        fields = [
-            'post_heading',
-            'post_text',
-            'post_cat',
-        ]
+        model = New
+        fields = ['name', 'description', 'category']
 
+    @property
     def clean(self):
         cleaned_data = super().clean()
-        heading = cleaned_data.get("post_heading")
-        text = cleaned_data.get("post_text")
+        description = cleaned_data.get("description")
+        name = cleaned_data.get("name")
 
-        if heading == text:
+        if name == description:
             raise ValidationError(
-                "Заголовок не должно быть идентичен тексту статьи."
+                "Описание не должно быть идентично названию."
             )
+
         return cleaned_data
